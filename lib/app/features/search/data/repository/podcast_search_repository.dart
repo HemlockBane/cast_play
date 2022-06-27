@@ -1,7 +1,11 @@
-import 'package:injectable/injectable.dart';
-import 'package:podplay_flutter/app/features/search/data/data_source/itunes_api_client.dart';
-import 'package:podplay_flutter/app/features/search/data/data_source/podcast_search_history_dao.dart';
+import 'dart:developer';
 
+import 'package:injectable/injectable.dart';
+import 'package:podplay_flutter/app/features/search/data/data_source/remote/itunes_api_client.dart';
+import 'package:podplay_flutter/app/features/search/data/data_source/local/podcast_search_history_dao.dart';
+import 'package:podplay_flutter/core/data/model/resource.dart';
+
+import '../data_source/local/shared_pref_search_history_dao.dart';
 import '../model/response/podcast_response.dart';
 
 @Singleton()
@@ -16,24 +20,31 @@ class PodcastSearchRepository {
   final ItunesApiClient _itunesApiClient;
   final PodcastSearchHistoryDao _podcastSearchHistoryDao;
 
-  Future<PodcastResponse?> getPodcastByTerm(String term) async {
-    PodcastResponse? response;
+  Stream<List<String>> get searchHistory {
+    return _podcastSearchHistoryDao.getSearchHistory();
+  }
+
+  Future<Resource<PodcastResponse>> getPodcastByTerm(String term) async {
+    Resource<PodcastResponse> resource;
     try {
-      response = await _itunesApiClient.getPodcastByTerm(term);
+      final response = await _itunesApiClient.getPodcastByTerm(term);
+      resource = Resource.success(response);
     } on Exception catch (e, s) {
-      print(e);
-      print(s.toString());
+      resource = Resource.failure(errorMessage: "error");
+      log(s.toString());
     }
-    return response;
+    return resource;
   }
 
-  void addToSearchHistory() {}
-
-  void clearSearchHistory() {}
-
-  Stream<List<String>> getSearchHistory() {
-    return const Stream<List<String>>.empty();
+  void addToSearchHistory({required String searchTerm}) {
+    _podcastSearchHistoryDao.addToSearchHistory(searchTerm: searchTerm);
   }
 
-  void removeFromSearchHistory() {}
+  void removeFromSearchHistory({required String searchTerm}) {
+    _podcastSearchHistoryDao.removeFromSearchHistory(searchTerm: searchTerm);
+  }
+
+  void clearSearchHistory() {
+    _podcastSearchHistoryDao.clearSearchHistory();
+  }
 }

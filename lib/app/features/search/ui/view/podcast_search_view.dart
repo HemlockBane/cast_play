@@ -25,9 +25,8 @@ class _PodcastSearchViewState extends State<PodcastSearchView> {
               showSearch(
                 context: context,
                 delegate: PodcastSearchDelegate(
-                  searchFieldLabel: "Type here...",
-                  searchFieldStyle: const TextStyle(fontSize: 15)
-                ),
+                    searchFieldLabel: "Type here...",
+                    searchFieldStyle: const TextStyle(fontSize: 15)),
               );
             },
             enabled: true,
