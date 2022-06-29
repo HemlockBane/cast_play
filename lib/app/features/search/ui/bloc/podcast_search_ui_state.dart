@@ -27,10 +27,24 @@ class SearchLoading extends SearchUiState {}
 
 class SearchSuccess extends SearchUiState {
   SearchSuccess({
-    this.data = const <ItunesPodcast>[],
+    this.data = const <PodcastSummary>[],
   });
 
-  final List<ItunesPodcast> data;
+  final List<PodcastSummary> data;
 }
 
 class SearchFailure extends SearchUiState {}
+
+class PodcastSummary {
+  PodcastSummary({
+    this.name,
+    this.feedUrl,
+    this.imageUrl,
+    this.lastUpdated,
+  });
+
+  String? name;
+  String? imageUrl;
+  String? feedUrl;
+  String? lastUpdated;
+}

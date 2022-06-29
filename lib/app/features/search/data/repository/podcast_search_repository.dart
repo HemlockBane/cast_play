@@ -30,6 +30,7 @@ class PodcastSearchRepository {
       final response = await _itunesApiClient.getPodcastByTerm(term);
       resource = Resource.success(response);
     } on Exception catch (e, s) {
+      // TODO: Handle this error well
       resource = Resource.failure(errorMessage: "error");
       log(s.toString());
     }

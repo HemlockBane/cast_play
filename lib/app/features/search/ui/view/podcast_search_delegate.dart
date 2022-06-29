@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:podplay_flutter/app/features/search/ui/bloc/podcast_search_cubit.dart';
 import 'package:podplay_flutter/app/features/search/ui/bloc/podcast_search_ui_state.dart';
+import 'package:podplay_flutter/app/features/search/ui/view/podcast_summary_item_view.dart';
+import 'package:podplay_flutter/core/ui/widgets/app_circular_loading_view.dart';
+import 'package:podplay_flutter/core/ui/widgets/app_error_view.dart';
 
 class PodcastSearchDelegate extends SearchDelegate {
   PodcastSearchDelegate({
@@ -59,6 +62,14 @@ class PodcastSearchDelegate extends SearchDelegate {
   }
 
   @override
+  void showSuggestions(BuildContext context) {
+    if (_podcastSearchCubit.state is! SearchHistory) {
+      _podcastSearchCubit.getSearchHistory();
+    }
+    super.showSuggestions(context);
+  }
+
+  @override
   void showResults(
     BuildContext context, {
     bool shouldSaveSearchItem = true,
@@ -100,7 +111,8 @@ class PodcastSearchSuggestionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PodcastSearchCubit, SearchUiState>(
-      buildWhen: (_, state) => state is SearchHistory, // to control rebuilds
+      buildWhen: (prevState, newState) => newState is SearchHistory,
+      // to control rebuilds
       builder: (context, state) {
         if (state is SearchHistory) {
           if (state.data.isEmpty) {
@@ -264,14 +276,16 @@ class PodcastSearchResultsView extends StatelessWidget {
       buildWhen: (_, state) => state is! SearchHistory, // to control rebuilds
       builder: (context, state) {
         if (state is SearchLoading) {
-          return const CircularProgressIndicator();
+          return const AppCircularLoadingView();
         }
         if (state is SearchFailure) {
-          return const Text("Failure");
+          return const AppErrorView();
         }
 
         if (state is SearchSuccess) {
-          return const Text("Success");
+          return PodcastListView(
+            data: state.data,
+          );
         }
 
         return const SizedBox();
@@ -280,28 +294,28 @@ class PodcastSearchResultsView extends StatelessWidget {
   }
 }
 
-// We want to be able to search from 2 places:
-// - Tapping a search history item
-// - Tapping the search icon in the keyboard
+class PodcastListView extends StatelessWidget {
+  const PodcastListView({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
 
-// What's the problem?
-// The problem is that our initial way of saving the item &
-// starting the search in the build results method was causing an
-// already saved item to get saved again
+  final List<PodcastSummary> data;
 
-// Options:
-// - Move the logic for adding item to the search
-// methid
-
-// What would have been the best:
-// - We can control the switching process from suggestions to results and back
-// - We can access the search textfield so we trigger the search process by ourselves
-// Flow for search from textfield would be:
-// - When user presses enter button, call search method
-// - Change from suggestions view to results view
-// Flow for search from history item would be:
-// - When user taps the history item, set query to history item
-// - Call search method with save flag off
-// - Change from suggestions view to results view
-// Ways to go back to suggestions view would be:
-// - Tap, the textfield, clear the text in textfield
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      itemCount: data.length,
+      separatorBuilder: (_, __) => const SizedBox(),
+      itemBuilder: (ctx, idx) {
+        final summary = data[idx];
+        return PodcastSummaryItemView(
+          name: summary.name ?? "",
+          imageUrl: summary.imageUrl ?? "",
+          feedUrl: summary.feedUrl ?? "",
+          lastUpdated: summary.lastUpdated ?? "",
+        );
+      },
+    );
+  }
+}
