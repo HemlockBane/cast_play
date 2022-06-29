@@ -47,4 +47,8 @@ class PodcastSearchRepository {
   void clearSearchHistory() {
     _podcastSearchHistoryDao.clearSearchHistory();
   }
+
+  void close() {
+    _podcastSearchHistoryDao.close();
+  }
 }

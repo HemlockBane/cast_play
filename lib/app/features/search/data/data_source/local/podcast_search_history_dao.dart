@@ -9,4 +9,6 @@ abstract class PodcastSearchHistoryDao {
   void removeFromSearchHistory({required String searchTerm});
 
   void clearSearchHistory();
+
+  void close();
 }

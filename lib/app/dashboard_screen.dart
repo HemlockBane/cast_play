@@ -10,7 +10,10 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final _selectedIndex = ValueNotifier(0);
-  final pages = [const PodcastSearchView(), Container()];
+  final pages = [
+    const PodcastSearchView(),
+    Container(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -44,24 +47,24 @@ class _BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
-        valueListenable: selectedIndex,
-        builder: (ctx, value, _) {
-          return BottomNavigationBar(
-            currentIndex: value,
-            selectedItemColor: Colors.amber[800],
-            onTap: onItemTapped,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.explore_outlined),
-                label: 'Discover',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.headphones_sharp),
-                label: 'Library',
-              ),
-            ],
-          );
-        },
+      valueListenable: selectedIndex,
+      builder: (ctx, value, _) {
+        return BottomNavigationBar(
+          currentIndex: value,
+          selectedItemColor: Colors.amber[800],
+          onTap: onItemTapped,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.explore_outlined),
+              label: 'Discover',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.headphones_sharp),
+              label: 'Library',
+            ),
+          ],
+        );
+      },
     );
   }
 }

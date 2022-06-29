@@ -29,8 +29,8 @@ class SharedPreferencesSearchHistoryDao implements PodcastSearchHistoryDao {
         ..add(searchTerm);
     }
 
-    _sharedPreferences.setStringList(searchTerm, history);
-    final data = _sharedPreferences.getStringList(searchTerm) ?? [];
+    _sharedPreferences.setStringList(searchItems, history);
+    final data = _sharedPreferences.getStringList(searchItems) ?? [];
     _historySubject.add(data.reversed.toList());
   }
 
@@ -55,5 +55,10 @@ class SharedPreferencesSearchHistoryDao implements PodcastSearchHistoryDao {
     _sharedPreferences.setStringList(searchItems, history);
     final data = _sharedPreferences.getStringList(searchItems) ?? [];
     _historySubject.add(data);
+  }
+
+  @override
+  void close() {
+    _historySubject.close();
   }
 }
