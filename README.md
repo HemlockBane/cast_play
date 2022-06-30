@@ -1,5 +1,3 @@
-# Podplay
-
 ## Overview
 
 Podplay is a podcast app built with Flutter.
