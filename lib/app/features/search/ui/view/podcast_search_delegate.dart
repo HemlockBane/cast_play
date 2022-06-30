@@ -190,6 +190,7 @@ class SearchHistoryView extends StatelessWidget {
           ListView.separated(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
+            reverse: true,
             itemCount: searchHistory.length,
             separatorBuilder: (ctx, idx) => const SizedBox(height: 12),
             itemBuilder: (ctx, idx) {
