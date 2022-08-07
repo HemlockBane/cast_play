@@ -6,20 +6,23 @@ import 'package:podplay_flutter/core/data/data_source/remote/interceptors/text_m
 
 @Singleton()
 class ApiClient {
-  ApiClient();
+  ApiClient({Dio? dio}) : _dio = dio ?? getDio();
 
-  static final _baseOptions = BaseOptions();
-  final Dio _dio = Dio(_baseOptions)
-    ..options.responseType = ResponseType.plain
-    ..interceptors.addAll([
-      TextMimeTypeResponseConverter(),
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        logPrint: logger,
-      )
-    ]);
+  static BaseOptions getDioBaseOptions() => BaseOptions();
+  static Dio getDio() {
+    return Dio(getDioBaseOptions())
+      ..options.responseType = ResponseType.plain
+      ..interceptors.addAll([
+        TextMimeTypeResponseConverter(),
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          logPrint: logger,
+        )
+      ]);
+  }
 
+  final Dio _dio;
   Dio get dio => _dio;
 
   static void logger(Object data) {
