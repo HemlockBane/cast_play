@@ -12,7 +12,7 @@ part 'itunes_api_client.g.dart';
 @RestApi(baseUrl: ApiConfig.iTunesUrl)
 abstract class ItunesApiClient {
   @factoryMethod
-  factory ItunesApiClient.fromApiClient(ApiClient apiClient) =>
+  factory ItunesApiClient.fromApiClient(ApiClient apiClient, {String? baseUrl}) =>
       ItunesApiClient(apiClient.dio);
 
   factory ItunesApiClient(Dio dio, {String baseUrl}) = _ItunesApiClient;
