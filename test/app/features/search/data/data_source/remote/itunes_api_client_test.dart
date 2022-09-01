@@ -6,7 +6,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:podplay_flutter/app/features/search/data/data_source/remote/itunes_api_client.dart';
 import 'package:podplay_flutter/app/features/search/data/model/response/podcast_response.dart';
-import 'package:podplay_flutter/core/data/data_source/remote/api_client.dart';
 
 import 'itunes_api_client_test.mocks.dart';
 
@@ -21,8 +20,7 @@ void main() {
     dio = Dio();
     mockClientAdapter = MockHttpClientAdapter();
     dio.httpClientAdapter = mockClientAdapter;
-    final apiClient = ApiClient(dio: dio);
-    itunesApiClient = ItunesApiClient.fromApiClient(apiClient);
+    itunesApiClient = ItunesApiClient(dio);
   });
 
   group("Get Podcast", () {
